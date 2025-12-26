@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Shield } from "lucide-react";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 interface NavbarProps {
   onRegisterClick: () => void;
@@ -10,6 +12,7 @@ interface NavbarProps {
 const Navbar = ({ onRegisterClick }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { t } = useTranslation();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -38,7 +41,7 @@ const Navbar = ({ onRegisterClick }: NavbarProps) => {
                 isActive("/") ? "text-red-600" : "text-slate-600 hover:text-slate-800"
               }`}
             >
-              Home
+              {t('nav.home')}
             </Link>
             <Link
               to="/about"
@@ -46,9 +49,10 @@ const Navbar = ({ onRegisterClick }: NavbarProps) => {
                 isActive("/about") ? "text-red-600" : "text-slate-600 hover:text-slate-800"
               }`}
             >
-              About
+              {t('nav.about')}
             </Link>
-            <Button 
+            <LanguageSwitcher />
+            <Button
               className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow-soft hover:shadow-elevated transition-all duration-300"
               onClick={onRegisterClick}
             >
@@ -81,7 +85,7 @@ const Navbar = ({ onRegisterClick }: NavbarProps) => {
                   isActive("/") ? "text-red-600" : "text-slate-600"
                 }`}
               >
-                Home
+                {t('nav.home')}
               </Link>
               <Link
                 to="/about"
@@ -90,8 +94,11 @@ const Navbar = ({ onRegisterClick }: NavbarProps) => {
                   isActive("/about") ? "text-red-600" : "text-slate-600"
                 }`}
               >
-                About
+                {t('nav.about')}
               </Link>
+              <div className="py-2">
+                <LanguageSwitcher />
+              </div>
               <Button
                 className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow-soft hover:shadow-elevated transition-all duration-300"
                 onClick={() => {

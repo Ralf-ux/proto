@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RegistrationModal from "@/components/RegistrationModal";
-import { 
-  Shield, 
+import {
+  Shield,
   ArrowRight,
   Lock,
   Globe,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 
 const Index = () => {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Removed features and stats sections as requested
@@ -54,7 +56,7 @@ const Index = () => {
               <div className="inline-block mb-4 sm:mb-6">
                 <div className="flex items-center gap-2 sm:gap-3 bg-red-600/20 backdrop-blur-sm border border-red-500/30 rounded-full px-4 sm:px-6 py-2 sm:py-3">
                   <Lock className="w-4 sm:w-5 h-4 sm:h-5 text-red-400" />
-                  <span className="text-red-400 font-semibold tracking-wide uppercase text-xs sm:text-sm">Professional Security</span>
+                  <span className="text-red-400 font-semibold tracking-wide uppercase text-xs sm:text-sm">{t('index.professionalSecurity')}</span>
                 </div>
               </div>
               
@@ -69,8 +71,8 @@ const Index = () => {
             {/* Subtitle with glass morphism */}
             <div className="mb-8 sm:mb-12 animate-fade-up backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8 max-w-3xl mx-auto sm:mx-0" style={{ animationDelay: "0.2s" }}>
               <p className="font-body text-lg sm:text-2xl md:text-3xl text-white/90 leading-relaxed font-light">
-                Professional security services dedicated to protecting {" "}
-                <span className="font-bold text-red-400">IAI CAMEROON Resident Representative</span>{" "}
+                {t('index.heroSubtitle')} {" "}
+                <span className="font-bold text-red-400">{t('index.heroHighlight')}</span>{" "}
               </p>
             </div>
 
@@ -82,7 +84,7 @@ const Index = () => {
                 onClick={() => setIsModalOpen(true)}
               >
                 <Shield className="w-5 sm:w-6 h-5 sm:h-6 mr-2 sm:mr-3" />
-                Register Now
+                {t('index.registerNow')}
                 <ArrowRight className="w-5 sm:w-6 h-5 sm:h-6 ml-2 sm:ml-3 group-hover:translate-x-2 transition-transform" />
               </Button>
               
@@ -94,7 +96,7 @@ const Index = () => {
               >
                 <a href="/about" className="flex items-center justify-center gap-3">
                   <Globe className="w-5 sm:w-6 h-5 sm:h-6" />
-                  Learn More
+                  {t('index.learnMore')}
                 </a>
               </Button>
             </div>
@@ -103,15 +105,15 @@ const Index = () => {
             <div className="mt-12 sm:mt-16 flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-8 items-center justify-center sm:justify-start opacity-80 animate-fade-up" style={{ animationDelay: "0.6s" }}>
               <div className="flex items-center gap-2 text-white/70">
                 <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-red-400" />
-                <span className="text-sm font-medium">Certified Agents</span>
+                <span className="text-sm font-medium">{t('index.certifiedAgents')}</span>
               </div>
               <div className="flex items-center gap-2 text-white/70">
                 <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-red-400" />
-                <span className="text-sm font-medium">24/7 Protection</span>
+                <span className="text-sm font-medium">{t('index.protection247')}</span>
               </div>
               <div className="flex items-center gap-2 text-white/70">
                 <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-red-400" />
-                <span className="text-sm font-medium">Trusted in Cameroon</span>
+                <span className="text-sm font-medium">{t('index.trustedCameroon')}</span>
               </div>
             </div>
           </div>
@@ -127,19 +129,19 @@ const Index = () => {
       <section className="py-12 sm:py-20 px-4 bg-slate-800">
         <div className="container mx-auto text-center">
           <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6">
-            Ready to <span className="text-red-400">Register</span>?
+            {t('index.ctaTitle').replace('Register', '')}<span className="text-red-400">Register</span>?
           </h2>
           <p className="font-body text-lg sm:text-xl text-slate-300 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
-            Secure your school's resident representative with IAI PROTOCOLE.
+            {t('index.ctaSubtitle')}
           </p>
-          
-          <Button 
-            size="lg" 
+
+          <Button
+            size="lg"
             className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-bold shadow-glow transition-all duration-300 group"
             onClick={() => setIsModalOpen(true)}
           >
             <Shield className="w-5 sm:w-6 h-5 sm:h-6 mr-2 sm:mr-3" />
-            Register Now
+            {t('index.registerNow')}
             <ArrowRight className="w-5 sm:w-6 h-5 sm:h-6 ml-2 sm:ml-3 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>

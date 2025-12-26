@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RegistrationModal from "@/components/RegistrationModal";
@@ -6,26 +7,24 @@ import { Button } from "@/components/ui/button";
 import { Shield, Eye, Users, ArrowRight } from "lucide-react";
 
 const About = () => {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const values = [
     {
       icon: Shield,
-      title: "Our Mission",
-      description:
-        "To provide professional security services that ensure the safety and protection of school resident representative of IAI Cameroon.",
+      title: t('about.ourMission'),
+      description: t('about.missionDesc'),
     },
     {
       icon: Eye,
-      title: "Our MOTO",
-      description:
-        " PROTOCOLE CHARISM",
+      title: t('about.ourMoto'),
+      description: t('about.motoDesc'),
     },
     {
       icon: Users,
-      title: "Our Values",
-      description:
-        "Integrity, vigilance, professionalism, and dedication guide our security operations. We believe in protecting what matters most.",
+      title: t('about.ourValues'),
+      description: t('about.valuesDesc'),
     },
   ];
 
@@ -53,7 +52,7 @@ const About = () => {
             <div className="inline-block mb-6">
               <div className="flex items-center gap-3 bg-red-600/20 backdrop-blur-sm border border-red-500/30 rounded-full px-6 py-3">
                 <Shield className="w-5 h-5 text-red-400" />
-                <span className="text-red-400 font-semibold tracking-wide uppercase text-sm">About Us</span>
+                <span className="text-red-400 font-semibold tracking-wide uppercase text-sm">{t('about.aboutUs')}</span>
               </div>
             </div>
             
@@ -63,8 +62,8 @@ const About = () => {
             
             <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-8 max-w-3xl mx-auto animate-fade-up" style={{ animationDelay: "0.1s" }}>
               <p className="font-body text-xl md:text-2xl text-white/90 leading-relaxed font-light">
-                Professional security services dedicated to protecting{" "}
-                <span className="font-bold text-red-400"> IAI CAMEROON Resident Representative</span>{" "}.
+                {t('index.heroSubtitle')}{" "}
+                <span className="font-bold text-red-400">{t('index.heroHighlight')}</span>{" "} .
               </p>
             </div>
           </div>
@@ -80,17 +79,17 @@ const About = () => {
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-2xl p-8 md:p-12 shadow-soft border border-slate-200">
               <h2 className="font-display text-2xl md:text-3xl font-bold text-slate-800 mb-6">
-                Our Story
+                {t('about.ourStory')}
               </h2>
               <div className="space-y-4 font-body text-slate-600">
                 <p>
-                  IAI PROTOCOLE was established to address the growing need for professional security services in Cameroon's educational sector. We specialize in providing comprehensive protection for school resident representatives, ensuring their safety and peace of mind.
+                  {t('about.story1')}
                 </p>
                 <p>
-                  Our team consists of highly trained security professionals with extensive experience in protection services. We understand the unique challenges faced by educational institutions and provide tailored security solutions that meet their specific needs.
+                  {t('about.story2')}
                 </p>
                 <p>
-                  Today, we are recognized as a trusted security partner for schools across Cameroon, maintaining the highest standards of professionalism and reliability in all our operations.
+                  {t('about.story3')}
                 </p>
               </div>
             </div>
@@ -103,7 +102,7 @@ const About = () => {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="font-display text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-              What Drives Us
+              {t('about.whatDrivesUs')}
             </h2>
           </div>
 
@@ -134,26 +133,26 @@ const About = () => {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="font-display text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-              Our Services
+              {t('about.ourServices')}
             </h2>
             <p className="font-body text-xl text-slate-600 max-w-2xl mx-auto">
-              Comprehensive security solutions tailored for educational institutions
+              {t('about.servicesSubtitle')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {[
               {
-                title: "Resident Representative Protection",
-                description: "24/7 security coverage for school resident representatives"
+                title: t('about.residentProtection'),
+                description: t('about.residentProtectionDesc')
               },
               {
-                title: "Campus Security",
-                description: "Comprehensive security monitoring and patrol services"
+                title: t('about.campusSecurity'),
+                description: t('about.campusSecurityDesc')
               },
               {
-                title: "Emergency Response",
-                description: "Rapid response protocols for security"
+                title: t('about.emergencyResponse'),
+                description: t('about.emergencyResponseDesc')
               },
 
             ].map((service, index) => (
@@ -183,13 +182,13 @@ const About = () => {
           <p className="font-body text-slate-300 mb-8 max-w-xl mx-auto">
           IAI PROTOCOLE .
           </p>
-          <Button 
+          <Button
             size="lg"
             className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-lg font-semibold shadow-elevated transition-all duration-300 group"
             onClick={() => setIsModalOpen(true)}
           >
             <Shield className="w-5 h-5 mr-2" />
-            Register Now
+            {t('index.registerNow')}
             <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>

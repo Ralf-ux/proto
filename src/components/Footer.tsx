@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Shield } from "lucide-react";
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-slate-800 text-white py-12">
       <div className="container mx-auto px-4">
@@ -18,27 +21,27 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-slate-300 font-body text-sm">
-              IAI PROTOCOLE
+              {t('footer.brand')}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-display font-semibold text-lg mb-4 text-white">Quick Links</h4>
+            <h4 className="font-display font-semibold text-lg mb-4 text-white">{t('footer.quickLinks')}</h4>
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-slate-300 hover:text-white transition-colors font-body text-sm">
-                  Home
+                  {t('nav.home')}
                 </Link>
               </li>
               <li>
                 <Link to="/about" className="text-slate-300 hover:text-white transition-colors font-body text-sm">
-                  About Us
+                  {t('nav.about')}
                 </Link>
               </li>
               <li>
                 <a href="#services" className="text-slate-300 hover:text-white transition-colors font-body text-sm">
-                  Services
+                  {t('nav.services')}
                 </a>
               </li>
             </ul>
@@ -46,17 +49,17 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="font-display font-semibold text-lg mb-4 text-white">Contact</h4>
+            <h4 className="font-display font-semibold text-lg mb-4 text-white">{t('footer.contact')}</h4>
             <ul className="space-y-2 text-slate-300 font-body text-sm">
-              <li>info@iaiprotocole.com</li>
-              <li>+1 (555) 987-6543</li>
-              <li>456 Security Boulevard</li>
+              <li>{t('footer.email')}</li>
+              <li>{t('footer.phone')}</li>
+              <li>{t('footer.address')}</li>
               <li>
-                <Link 
-                  to="/records" 
+                <Link
+                  to="/records"
                   className="text-slate-300 hover:text-white transition-colors underline"
                 >
-                  Admin Records
+                  {t('footer.adminRecords')}
                 </Link>
               </li>
             </ul>
@@ -65,7 +68,7 @@ const Footer = () => {
 
         <div className="border-t border-slate-700 mt-8 pt-8 text-center">
           <p className="text-slate-400 font-body text-sm">
-            © {new Date().getFullYear()} IAI PROTOCOLE. All rights reserved.
+            {t('footer.copyright', { year: new Date().getFullYear() })}
           </p>
         </div>
       </div>

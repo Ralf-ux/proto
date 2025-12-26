@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
-import { 
-  Download, 
-  Users, 
-  Search, 
+import {
+  Download,
+  Users,
+  Search,
   Calendar,
   Mail,
   Phone,
@@ -33,6 +34,7 @@ interface RegistrationRecord {
 }
 
 const Records = () => {
+  const { t } = useTranslation();
   const [records, setRecords] = useState<RegistrationRecord[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -64,13 +66,13 @@ const Records = () => {
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       toast({
-        title: "Access Granted",
-        description: "Welcome to the admin records panel",
+        title: t('auth.granted'),
+        description: t('auth.grantedMessage'),
       });
     } else {
       toast({
-        title: "Access Denied",
-        description: "Invalid password",
+        title: t('auth.denied'),
+        description: t('auth.deniedMessage'),
         variant: "destructive",
       });
     }
@@ -96,8 +98,8 @@ const Records = () => {
     setRecords(updatedRecords);
     localStorage.setItem("registrationRecords", JSON.stringify(updatedRecords));
     toast({
-      title: "Record Deleted",
-      description: "Registration record has been removed",
+      title: t('records.delete'),
+      description: t('records.deleteMessage'),
     });
   };
 
@@ -301,14 +303,14 @@ const Records = () => {
       URL.revokeObjectURL(url);
 
       toast({
-        title: "Download Complete",
-        description: "Registration records have been downloaded as Word document",
+        title: t('records.downloadSuccess'),
+        description: t('records.downloadSuccessMessage'),
       });
     } catch (error) {
       console.error("Error generating document:", error);
       toast({
-        title: "Download Failed",
-        description: "Failed to generate Word document. Please try again.",
+        title: t('records.downloadError'),
+        description: t('records.downloadErrorMessage'),
         variant: "destructive",
       });
     }
@@ -321,22 +323,22 @@ const Records = () => {
           <div className="text-center mb-8">
             <Shield className="w-16 h-16 text-red-600 mx-auto mb-4" />
             <h1 className="font-display text-2xl font-bold text-slate-800 mb-2">
-              Admin Access Required
+              {t('auth.title')}
             </h1>
             <p className="text-slate-600">
-              Enter the admin password to access registration records
+              {t('auth.description')}
             </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="password" className="text-slate-700 font-medium">
-                Admin Password
+                {t('auth.password')}
               </Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter admin password"
+                placeholder={t('auth.password')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="bg-white border-slate-300 focus:border-red-500 focus:ring-red-500"
@@ -344,11 +346,11 @@ const Records = () => {
               />
             </div>
 
-            <Button 
+            <Button
               type="submit"
               className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 text-lg"
             >
-              Access Records
+              {t('auth.access')}
             </Button>
           </form>
         </div>
@@ -364,11 +366,11 @@ const Records = () => {
           <div className="flex flex-col gap-4 sm:gap-6">
             <div>
               <h1 className="font-display text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
-                Registration Records
+                {t('records.title')}
               </h1>
               <p className="text-slate-600 flex items-center gap-2 text-sm sm:text-base">
                 <Users className="w-4 sm:w-5 h-4 sm:h-5" />
-                Total Registrations: {records.length}
+                {t('records.total')}: {records.length}
               </p>
             </div>
 
@@ -376,7 +378,7 @@ const Records = () => {
               <div className="relative flex-1">
                 <Search className="w-4 sm:w-5 h-4 sm:h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
                 <Input
-                  placeholder="Search records..."
+                  placeholder={t('records.search')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-8 sm:pl-10 bg-white border-slate-300 focus:border-red-500 focus:ring-red-500 text-sm sm:text-base"
@@ -389,7 +391,7 @@ const Records = () => {
                 disabled={filteredRecords.length === 0}
               >
                 <Download className="w-4 sm:w-5 h-4 sm:h-5 mr-2" />
-                Download Word
+                {t('records.download')}
               </Button>
             </div>
           </div>
@@ -401,10 +403,10 @@ const Records = () => {
             <div className="p-8 sm:p-12 text-center">
               <Users className="w-12 sm:w-16 h-12 sm:h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="font-display text-lg sm:text-xl font-semibold text-slate-600 mb-2">
-                No Records Found
+                {t('records.noRecords')}
               </h3>
               <p className="text-slate-500 text-sm sm:text-base">
-                {searchTerm ? "No records match your search criteria" : "No registrations have been submitted yet"}
+                {searchTerm ? t('records.noRecordsMessage') : t('records.noRecordsAlt')}
               </p>
             </div>
           ) : (
@@ -412,12 +414,12 @@ const Records = () => {
               <table className="w-full min-w-[800px]">
                 <thead className="bg-slate-50 border-b border-slate-200">
                   <tr>
-                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">Name</th>
-                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">Contact</th>
-                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">Details</th>
-                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">Registration</th>
-                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-700">Status</th>
-                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-700">Actions</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">{t('records.name')}</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">{t('records.contact')}</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">{t('records.details')}</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">{t('records.registration')}</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-700">{t('records.status')}</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-700">{t('records.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
