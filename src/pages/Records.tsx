@@ -27,8 +27,7 @@ interface RegistrationRecord {
   age: string;
   nationality: string;
   gender: string;
-  photo: string | null;
-  photoName: string | null;
+  class: string;
   registrationDate: string;
   checked: boolean;
 }
@@ -109,45 +108,52 @@ const Records = () => {
         // Header row with better formatting
         new TableRow({
           children: [
-            new TableCell({ 
-              children: [new Paragraph({ 
-                children: [new TextRun({ text: "Full Name", bold: true, size: 26 })], 
-                alignment: AlignmentType.CENTER 
+            new TableCell({
+              children: [new Paragraph({
+                children: [new TextRun({ text: "Full Name", bold: true, size: 26 })],
+                alignment: AlignmentType.CENTER
               })],
-              width: { size: 25, type: WidthType.PERCENTAGE }
+              width: { size: 20, type: WidthType.PERCENTAGE }
             }),
-            new TableCell({ 
-              children: [new Paragraph({ 
-                children: [new TextRun({ text: "Email", bold: true, size: 26 })], 
-                alignment: AlignmentType.CENTER 
+            new TableCell({
+              children: [new Paragraph({
+                children: [new TextRun({ text: "Email", bold: true, size: 26 })],
+                alignment: AlignmentType.CENTER
               })],
-              width: { size: 25, type: WidthType.PERCENTAGE }
+              width: { size: 20, type: WidthType.PERCENTAGE }
             }),
-            new TableCell({ 
-              children: [new Paragraph({ 
-                children: [new TextRun({ text: "Phone", bold: true, size: 26 })], 
-                alignment: AlignmentType.CENTER 
-              })],
-              width: { size: 15, type: WidthType.PERCENTAGE }
-            }),
-            new TableCell({ 
-              children: [new Paragraph({ 
-                children: [new TextRun({ text: "Age", bold: true, size: 26 })], 
-                alignment: AlignmentType.CENTER 
+            new TableCell({
+              children: [new Paragraph({
+                children: [new TextRun({ text: "Phone", bold: true, size: 26 })],
+                alignment: AlignmentType.CENTER
               })],
               width: { size: 15, type: WidthType.PERCENTAGE }
             }),
-            new TableCell({ 
-              children: [new Paragraph({ 
-                children: [new TextRun({ text: "Gender", bold: true, size: 26 })], 
-                alignment: AlignmentType.CENTER 
+            new TableCell({
+              children: [new Paragraph({
+                children: [new TextRun({ text: "Age", bold: true, size: 26 })],
+                alignment: AlignmentType.CENTER
               })],
               width: { size: 10, type: WidthType.PERCENTAGE }
             }),
-            new TableCell({ 
-              children: [new Paragraph({ 
-                children: [new TextRun({ text: "Status ☐", bold: true, size: 26 })], 
-                alignment: AlignmentType.CENTER 
+            new TableCell({
+              children: [new Paragraph({
+                children: [new TextRun({ text: "Gender", bold: true, size: 26 })],
+                alignment: AlignmentType.CENTER
+              })],
+              width: { size: 10, type: WidthType.PERCENTAGE }
+            }),
+            new TableCell({
+              children: [new Paragraph({
+                children: [new TextRun({ text: "Class", bold: true, size: 26 })],
+                alignment: AlignmentType.CENTER
+              })],
+              width: { size: 10, type: WidthType.PERCENTAGE }
+            }),
+            new TableCell({
+              children: [new Paragraph({
+                children: [new TextRun({ text: "Status ☐", bold: true, size: 26 })],
+                alignment: AlignmentType.CENTER
               })],
               width: { size: 10, type: WidthType.PERCENTAGE }
             }),
@@ -158,50 +164,58 @@ const Records = () => {
           return new TableRow({
             children: [
               // Full Name cell
-              new TableCell({ 
-                children: [new Paragraph({ 
-                  children: [new TextRun({ text: `${record.firstName} ${record.lastName}`, size: 26 })], 
-                  alignment: AlignmentType.LEFT 
+              new TableCell({
+                children: [new Paragraph({
+                  children: [new TextRun({ text: `${record.firstName} ${record.lastName}`, size: 26 })],
+                  alignment: AlignmentType.LEFT
                 })],
-                width: { size: 25, type: WidthType.PERCENTAGE }
+                width: { size: 20, type: WidthType.PERCENTAGE }
               }),
               // Email cell
-              new TableCell({ 
-                children: [new Paragraph({ 
-                  children: [new TextRun({ text: record.email, size: 26 })], 
-                  alignment: AlignmentType.LEFT 
+              new TableCell({
+                children: [new Paragraph({
+                  children: [new TextRun({ text: record.email, size: 26 })],
+                  alignment: AlignmentType.LEFT
                 })],
-                width: { size: 25, type: WidthType.PERCENTAGE }
+                width: { size: 20, type: WidthType.PERCENTAGE }
               }),
               // Phone cell
-              new TableCell({ 
-                children: [new Paragraph({ 
-                  children: [new TextRun({ text: record.phone, size: 26 })], 
-                  alignment: AlignmentType.LEFT 
+              new TableCell({
+                children: [new Paragraph({
+                  children: [new TextRun({ text: record.phone, size: 26 })],
+                  alignment: AlignmentType.LEFT
                 })],
                 width: { size: 15, type: WidthType.PERCENTAGE }
               }),
               // Age cell
-              new TableCell({ 
-                children: [new Paragraph({ 
-                  children: [new TextRun({ text: record.age, size: 26 })], 
-                  alignment: AlignmentType.CENTER 
+              new TableCell({
+                children: [new Paragraph({
+                  children: [new TextRun({ text: record.age, size: 26 })],
+                  alignment: AlignmentType.CENTER
                 })],
-                width: { size: 15, type: WidthType.PERCENTAGE }
+                width: { size: 10, type: WidthType.PERCENTAGE }
               }),
               // Gender cell
-              new TableCell({ 
-                children: [new Paragraph({ 
-                  children: [new TextRun({ text: record.gender, size: 26 })], 
-                  alignment: AlignmentType.CENTER 
+              new TableCell({
+                children: [new Paragraph({
+                  children: [new TextRun({ text: record.gender, size: 26 })],
+                  alignment: AlignmentType.CENTER
+                })],
+                width: { size: 10, type: WidthType.PERCENTAGE }
+              }),
+              // Class cell
+              new TableCell({
+                children: [new Paragraph({
+                  children: [new TextRun({ text: record.class, size: 26 })],
+                  alignment: AlignmentType.CENTER
                 })],
                 width: { size: 10, type: WidthType.PERCENTAGE }
               }),
               // Status checkbox cell
-              new TableCell({ 
-                children: [new Paragraph({ 
-                  children: [new TextRun({ text: record.checked ? "☑" : "☐", size: 26 })], 
-                  alignment: AlignmentType.CENTER 
+              new TableCell({
+                children: [new Paragraph({
+                  children: [new TextRun({ text: record.checked ? "☑" : "☐", size: 26 })],
+                  alignment: AlignmentType.CENTER
                 })],
                 width: { size: 10, type: WidthType.PERCENTAGE }
               }),
@@ -343,38 +357,38 @@ const Records = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4">
+    <div className="min-h-screen bg-slate-50 py-4 sm:py-8 px-2 sm:px-4">
       <div className="container mx-auto max-w-7xl">
         {/* Header */}
-        <div className="bg-white rounded-2xl p-8 shadow-soft mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div className="bg-white rounded-2xl p-4 sm:p-8 shadow-soft mb-4 sm:mb-8">
+          <div className="flex flex-col gap-4 sm:gap-6">
             <div>
-              <h1 className="font-display text-3xl font-bold text-slate-800 mb-2">
+              <h1 className="font-display text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
                 Registration Records
               </h1>
-              <p className="text-slate-600 flex items-center gap-2">
-                <Users className="w-5 h-5" />
+              <p className="text-slate-600 flex items-center gap-2 text-sm sm:text-base">
+                <Users className="w-4 sm:w-5 h-4 sm:h-5" />
                 Total Registrations: {records.length}
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <div className="relative">
-                <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+              <div className="relative flex-1">
+                <Search className="w-4 sm:w-5 h-4 sm:h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
                 <Input
                   placeholder="Search records..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-white border-slate-300 focus:border-red-500 focus:ring-red-500"
+                  className="pl-8 sm:pl-10 bg-white border-slate-300 focus:border-red-500 focus:ring-red-500 text-sm sm:text-base"
                 />
               </div>
 
               <Button
                 onClick={downloadWordDocument}
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow-soft hover:shadow-elevated transition-all duration-300"
+                className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-semibold shadow-soft hover:shadow-elevated transition-all duration-300 text-sm sm:text-base"
                 disabled={filteredRecords.length === 0}
               >
-                <Download className="w-5 h-5 mr-2" />
+                <Download className="w-4 sm:w-5 h-4 sm:h-5 mr-2" />
                 Download Word
               </Button>
             </div>
@@ -384,91 +398,95 @@ const Records = () => {
         {/* Records Table */}
         <div className="bg-white rounded-2xl shadow-soft overflow-hidden">
           {filteredRecords.length === 0 ? (
-            <div className="p-12 text-center">
-              <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="font-display text-xl font-semibold text-slate-600 mb-2">
+            <div className="p-8 sm:p-12 text-center">
+              <Users className="w-12 sm:w-16 h-12 sm:h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="font-display text-lg sm:text-xl font-semibold text-slate-600 mb-2">
                 No Records Found
               </h3>
-              <p className="text-slate-500">
+              <p className="text-slate-500 text-sm sm:text-base">
                 {searchTerm ? "No records match your search criteria" : "No registrations have been submitted yet"}
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full min-w-[800px]">
                 <thead className="bg-slate-50 border-b border-slate-200">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Name</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Contact</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Details</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Registration</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">Status</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">Actions</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">Name</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">Contact</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">Details</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">Registration</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-700">Status</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-700">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {filteredRecords.map((record) => (
                     <tr key={record.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                            <User className="w-5 h-5 text-red-600" />
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="w-8 sm:w-10 h-8 sm:h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <User className="w-4 sm:w-5 h-4 sm:h-5 text-red-600" />
                           </div>
-                          <div>
-                            <p className="font-semibold text-slate-800">
+                          <div className="min-w-0">
+                            <p className="font-semibold text-slate-800 text-sm sm:text-base truncate">
                               {record.firstName} {record.lastName}
                             </p>
-                            <p className="text-sm text-slate-600 capitalize">{record.gender}</p>
+                            <p className="text-xs sm:text-sm text-slate-600 capitalize">{record.gender}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <div className="space-y-1">
-                          <div className="flex items-center gap-2 text-sm text-slate-600">
-                            <Mail className="w-4 h-4" />
-                            {record.email}
+                          <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-slate-600">
+                            <Mail className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
+                            <span className="truncate">{record.email}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-slate-600">
-                            <Phone className="w-4 h-4" />
-                            {record.phone}
+                          <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-slate-600">
+                            <Phone className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
+                            <span>{record.phone}</span>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <div className="space-y-1">
-                          <div className="flex items-center gap-2 text-sm text-slate-600">
-                            <Calendar className="w-4 h-4" />
-                            {record.age} years old
+                          <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-slate-600">
+                            <Calendar className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
+                            <span>{record.age} years old</span>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-slate-600">
-                            <MapPin className="w-4 h-4" />
-                            {record.nationality || "N/A"}
+                          <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-slate-600">
+                            <MapPin className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
+                            <span className="truncate">{record.nationality || "N/A"}</span>
+                          </div>
+                          <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-slate-600">
+                            <User className="w-3 sm:w-4 h-3 sm:h-4 flex-shrink-0" />
+                            <span className="truncate">Class: {record.class}</span>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <p className="text-sm text-slate-600">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <p className="text-xs sm:text-sm text-slate-600">
                           {new Date(record.registrationDate).toLocaleDateString()}
                         </p>
                         <p className="text-xs text-slate-500">
                           {new Date(record.registrationDate).toLocaleTimeString()}
                         </p>
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 text-center">
                         <Checkbox
                           checked={record.checked}
                           onCheckedChange={(checked) => updateRecord(record.id, checked as boolean)}
                           className="border-red-600 data-[state=checked]:bg-red-600"
                         />
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 text-center">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => deleteRecord(record.id)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 p-1 sm:p-2"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3 sm:w-4 h-3 sm:h-4" />
                         </Button>
                       </td>
                     </tr>
