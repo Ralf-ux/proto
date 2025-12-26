@@ -1,0 +1,486 @@
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "@/hooks/use-toast";
+import { 
+  Download, 
+  Users, 
+  Search, 
+  Calendar,
+  Mail,
+  Phone,
+  MapPin,
+  User,
+  Shield,
+  Trash2
+} from "lucide-react";
+import { Document, Packer, Paragraph, Table, TableCell, TableRow, WidthType, AlignmentType, TextRun, ImageRun, HeadingLevel } from "docx";
+
+interface RegistrationRecord {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  age: string;
+  nationality: string;
+  gender: string;
+  photo: string | null;
+  photoName: string | null;
+  registrationDate: string;
+  checked: boolean;
+}
+
+const Records = () => {
+  const [records, setRecords] = useState<RegistrationRecord[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState("");
+  const [filteredRecords, setFilteredRecords] = useState<RegistrationRecord[]>([]);
+
+  // Admin password (in production, this should be more secure)
+  const ADMIN_PASSWORD = "iai2024admin";
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadRecords();
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    // Filter records based on search term
+    const filtered = records.filter(record => 
+      record.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.phone.includes(searchTerm)
+    );
+    setFilteredRecords(filtered);
+  }, [records, searchTerm]);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      toast({
+        title: "Access Granted",
+        description: "Welcome to the admin records panel",
+      });
+    } else {
+      toast({
+        title: "Access Denied",
+        description: "Invalid password",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const loadRecords = () => {
+    const storedRecords = localStorage.getItem("registrationRecords");
+    if (storedRecords) {
+      setRecords(JSON.parse(storedRecords));
+    }
+  };
+
+  const updateRecord = (id: string, checked: boolean) => {
+    const updatedRecords = records.map(record => 
+      record.id === id ? { ...record, checked } : record
+    );
+    setRecords(updatedRecords);
+    localStorage.setItem("registrationRecords", JSON.stringify(updatedRecords));
+  };
+
+  const deleteRecord = (id: string) => {
+    const updatedRecords = records.filter(record => record.id !== id);
+    setRecords(updatedRecords);
+    localStorage.setItem("registrationRecords", JSON.stringify(updatedRecords));
+    toast({
+      title: "Record Deleted",
+      description: "Registration record has been removed",
+    });
+  };
+
+  const downloadWordDocument = async () => {
+    try {
+      // Create table rows for the document
+      const tableRows = [
+        // Header row with better formatting
+        new TableRow({
+          children: [
+            new TableCell({ 
+              children: [new Paragraph({ 
+                children: [new TextRun({ text: "Full Name", bold: true, size: 26 })], 
+                alignment: AlignmentType.CENTER 
+              })],
+              width: { size: 25, type: WidthType.PERCENTAGE }
+            }),
+            new TableCell({ 
+              children: [new Paragraph({ 
+                children: [new TextRun({ text: "Email", bold: true, size: 26 })], 
+                alignment: AlignmentType.CENTER 
+              })],
+              width: { size: 25, type: WidthType.PERCENTAGE }
+            }),
+            new TableCell({ 
+              children: [new Paragraph({ 
+                children: [new TextRun({ text: "Phone", bold: true, size: 26 })], 
+                alignment: AlignmentType.CENTER 
+              })],
+              width: { size: 15, type: WidthType.PERCENTAGE }
+            }),
+            new TableCell({ 
+              children: [new Paragraph({ 
+                children: [new TextRun({ text: "Age", bold: true, size: 26 })], 
+                alignment: AlignmentType.CENTER 
+              })],
+              width: { size: 15, type: WidthType.PERCENTAGE }
+            }),
+            new TableCell({ 
+              children: [new Paragraph({ 
+                children: [new TextRun({ text: "Gender", bold: true, size: 26 })], 
+                alignment: AlignmentType.CENTER 
+              })],
+              width: { size: 10, type: WidthType.PERCENTAGE }
+            }),
+            new TableCell({ 
+              children: [new Paragraph({ 
+                children: [new TextRun({ text: "Status ☐", bold: true, size: 26 })], 
+                alignment: AlignmentType.CENTER 
+              })],
+              width: { size: 10, type: WidthType.PERCENTAGE }
+            }),
+          ],
+        }),
+        // Data rows with better formatting
+        ...filteredRecords.map((record) => {
+          return new TableRow({
+            children: [
+              // Full Name cell
+              new TableCell({ 
+                children: [new Paragraph({ 
+                  children: [new TextRun({ text: `${record.firstName} ${record.lastName}`, size: 26 })], 
+                  alignment: AlignmentType.LEFT 
+                })],
+                width: { size: 25, type: WidthType.PERCENTAGE }
+              }),
+              // Email cell
+              new TableCell({ 
+                children: [new Paragraph({ 
+                  children: [new TextRun({ text: record.email, size: 26 })], 
+                  alignment: AlignmentType.LEFT 
+                })],
+                width: { size: 25, type: WidthType.PERCENTAGE }
+              }),
+              // Phone cell
+              new TableCell({ 
+                children: [new Paragraph({ 
+                  children: [new TextRun({ text: record.phone, size: 26 })], 
+                  alignment: AlignmentType.LEFT 
+                })],
+                width: { size: 15, type: WidthType.PERCENTAGE }
+              }),
+              // Age cell
+              new TableCell({ 
+                children: [new Paragraph({ 
+                  children: [new TextRun({ text: record.age, size: 26 })], 
+                  alignment: AlignmentType.CENTER 
+                })],
+                width: { size: 15, type: WidthType.PERCENTAGE }
+              }),
+              // Gender cell
+              new TableCell({ 
+                children: [new Paragraph({ 
+                  children: [new TextRun({ text: record.gender, size: 26 })], 
+                  alignment: AlignmentType.CENTER 
+                })],
+                width: { size: 10, type: WidthType.PERCENTAGE }
+              }),
+              // Status checkbox cell
+              new TableCell({ 
+                children: [new Paragraph({ 
+                  children: [new TextRun({ text: record.checked ? "☑" : "☐", size: 26 })], 
+                  alignment: AlignmentType.CENTER 
+                })],
+                width: { size: 10, type: WidthType.PERCENTAGE }
+              }),
+            ],
+            height: { value: 600, rule: "atLeast" },
+          });
+        })
+      ];
+
+      const doc = new Document({
+        sections: [{
+          properties: {
+            page: {
+              margin: {
+                top: 720,
+                right: 720,
+                bottom: 720,
+                left: 720,
+              },
+            },
+          },
+          children: [
+            new Paragraph({
+              children: [new TextRun({ 
+                text: "IAI PROTOCOLE - Registration Records", 
+                bold: true, 
+                size: 32,
+                color: "DC2626"
+              })],
+              alignment: AlignmentType.CENTER,
+              spacing: { after: 400 },
+              heading: HeadingLevel.HEADING_1,
+            }),
+            new Paragraph({
+              children: [new TextRun({ 
+                text: `Generated on: ${new Date().toLocaleDateString()}`, 
+                size: 24 
+              })],
+              alignment: AlignmentType.CENTER,
+              spacing: { after: 200 },
+            }),
+            new Paragraph({
+              children: [new TextRun({ 
+                text: `Total Records: ${filteredRecords.length}`, 
+                size: 24,
+                bold: true 
+              })],
+              alignment: AlignmentType.CENTER,
+              spacing: { after: 600 },
+            }),
+            new Table({
+              width: { size: 100, type: WidthType.PERCENTAGE },
+              rows: tableRows,
+              borders: {
+                top: { style: "single", size: 1, color: "000000" },
+                bottom: { style: "single", size: 1, color: "000000" },
+                left: { style: "single", size: 1, color: "000000" },
+                right: { style: "single", size: 1, color: "000000" },
+                insideHorizontal: { style: "single", size: 1, color: "CCCCCC" },
+                insideVertical: { style: "single", size: 1, color: "CCCCCC" },
+              },
+            }),
+            new Paragraph({
+              children: [new TextRun({ 
+                text: "\n\nNote: Please review each candidate and mark the status column manually.", 
+                size: 22,
+                italics: true,
+                color: "666666"
+              })],
+              alignment: AlignmentType.LEFT,
+              spacing: { before: 400 },
+            }),
+          ],
+        }],
+      });
+
+      const blob = await Packer.toBlob(doc);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `IAI_PROTOCOLE_Records_${new Date().toISOString().split('T')[0]}.docx`;
+      link.click();
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Download Complete",
+        description: "Registration records have been downloaded as Word document",
+      });
+    } catch (error) {
+      console.error("Error generating document:", error);
+      toast({
+        title: "Download Failed",
+        description: "Failed to generate Word document. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-red-900 flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-white rounded-2xl p-8 shadow-2xl">
+          <div className="text-center mb-8">
+            <Shield className="w-16 h-16 text-red-600 mx-auto mb-4" />
+            <h1 className="font-display text-2xl font-bold text-slate-800 mb-2">
+              Admin Access Required
+            </h1>
+            <p className="text-slate-600">
+              Enter the admin password to access registration records
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-slate-700 font-medium">
+                Admin Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter admin password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-white border-slate-300 focus:border-red-500 focus:ring-red-500"
+                required
+              />
+            </div>
+
+            <Button 
+              type="submit"
+              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 text-lg"
+            >
+              Access Records
+            </Button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 py-8 px-4">
+      <div className="container mx-auto max-w-7xl">
+        {/* Header */}
+        <div className="bg-white rounded-2xl p-8 shadow-soft mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+              <h1 className="font-display text-3xl font-bold text-slate-800 mb-2">
+                Registration Records
+              </h1>
+              <p className="text-slate-600 flex items-center gap-2">
+                <Users className="w-5 h-5" />
+                Total Registrations: {records.length}
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="relative">
+                <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="Search records..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 bg-white border-slate-300 focus:border-red-500 focus:ring-red-500"
+                />
+              </div>
+
+              <Button
+                onClick={downloadWordDocument}
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow-soft hover:shadow-elevated transition-all duration-300"
+                disabled={filteredRecords.length === 0}
+              >
+                <Download className="w-5 h-5 mr-2" />
+                Download Word
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Records Table */}
+        <div className="bg-white rounded-2xl shadow-soft overflow-hidden">
+          {filteredRecords.length === 0 ? (
+            <div className="p-12 text-center">
+              <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="font-display text-xl font-semibold text-slate-600 mb-2">
+                No Records Found
+              </h3>
+              <p className="text-slate-500">
+                {searchTerm ? "No records match your search criteria" : "No registrations have been submitted yet"}
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Name</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Contact</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Details</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Registration</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">Status</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {filteredRecords.map((record) => (
+                    <tr key={record.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                            <User className="w-5 h-5 text-red-600" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-slate-800">
+                              {record.firstName} {record.lastName}
+                            </p>
+                            <p className="text-sm text-slate-600 capitalize">{record.gender}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-sm text-slate-600">
+                            <Mail className="w-4 h-4" />
+                            {record.email}
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-slate-600">
+                            <Phone className="w-4 h-4" />
+                            {record.phone}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-sm text-slate-600">
+                            <Calendar className="w-4 h-4" />
+                            {record.age} years old
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-slate-600">
+                            <MapPin className="w-4 h-4" />
+                            {record.nationality || "N/A"}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <p className="text-sm text-slate-600">
+                          {new Date(record.registrationDate).toLocaleDateString()}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {new Date(record.registrationDate).toLocaleTimeString()}
+                        </p>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <Checkbox
+                          checked={record.checked}
+                          onCheckedChange={(checked) => updateRecord(record.id, checked as boolean)}
+                          className="border-red-600 data-[state=checked]:bg-red-600"
+                        />
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteRecord(record.id)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Records;
