@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RegistrationModal from "@/components/RegistrationModal";
+import { SupabaseTest } from "@/components/SupabaseTest";
 import {
   Shield,
   ArrowRight,
@@ -148,6 +149,8 @@ const Index = () => {
       </section>
 
       <Footer />
+
+      {/* Supabase Test removed - database setup required */}
 
       <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>

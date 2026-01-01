@@ -10,10 +10,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// Removed Select components as they're no longer needed
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
-import { User, Mail, Phone, MapPin, Shield, Calendar, Users, CheckCircle } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { User, Mail, Phone, MapPin, Shield, Calendar, Users, CheckCircle, Loader2 } from "lucide-react";
 
 interface RegistrationModalProps {
   isOpen: boolean;
@@ -46,6 +46,7 @@ const RegistrationModal = ({ isOpen, onClose }: RegistrationModalProps) => {
     agreeToTerms: false,
   });
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -56,141 +57,177 @@ const RegistrationModal = ({ isOpen, onClose }: RegistrationModalProps) => {
   };
 
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    // Validation
-    if (!formData.firstName.trim()) {
+    try {
+      // Validation
+      if (!formData.firstName.trim()) {
+        toast({
+          title: "Validation Error",
+          description: t('validation.firstName'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!formData.lastName.trim()) {
+        toast({
+          title: "Validation Error",
+          description: t('validation.lastName'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!formData.email.trim() || !formData.email.includes("@")) {
+        toast({
+          title: "Validation Error",
+          description: t('validation.email'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!formData.phone.trim()) {
+        toast({
+          title: "Validation Error",
+          description: t('validation.phone'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!formData.age || parseInt(formData.age) < 1 || parseInt(formData.age) > 100) {
+        toast({
+          title: "Validation Error",
+          description: t('validation.age'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!formData.gender) {
+        toast({
+          title: "Validation Error",
+          description: t('validation.gender'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!formData.class.trim()) {
+        toast({
+          title: "Validation Error",
+          description: t('validation.class'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!formData.agreeToTerms) {
+        toast({
+          title: "Validation Error",
+          description: t('validation.terms'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Check if email already exists in Supabase
+      const { data: existingUser, error: checkError } = await supabase
+        .from('registrations')
+        .select('email')
+        .eq('email', formData.email.toLowerCase())
+        .single();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        // PGRST116 means no rows found, which is what we want
+        throw checkError;
+      }
+
+      if (existingUser) {
+        toast({
+          title: "Email Already Registered",
+          description: t('validation.emailExists'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Save to Supabase
+      const { data, error } = await supabase
+        .from('registrations')
+        .insert([
+          {
+            first_name: formData.firstName.trim(),
+            last_name: formData.lastName.trim(),
+            email: formData.email.toLowerCase().trim(),
+            phone: formData.phone.trim(),
+            age: parseInt(formData.age),
+            nationality: formData.nationality.trim() || null,
+            gender: formData.gender,
+            class: formData.class.trim(),
+          }
+        ])
+        .select();
+
+      if (error) {
+        throw error;
+      }
+
+      // Also keep localStorage backup for offline functionality
+      const existingRecords = JSON.parse(localStorage.getItem("registrationRecords") || "[]");
+      const registrationRecord = {
+        id: data[0].id,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        age: formData.age,
+        nationality: formData.nationality,
+        gender: formData.gender,
+        class: formData.class,
+        registrationDate: data[0].created_at,
+        checked: false,
+      };
+
+      const updatedRecords = [...existingRecords, registrationRecord];
+      localStorage.setItem("registrationRecords", JSON.stringify(updatedRecords));
+
+      // Show success popup
+      setShowSuccessPopup(true);
+
+      // Clear form
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        age: "",
+        nationality: "",
+        gender: "",
+        class: "",
+        agreeToTerms: false,
+      });
+
       toast({
-        title: "Validation Error",
-        description: t('validation.firstName'),
+        title: "Registration Successful!",
+        description: "Your registration has been saved successfully.",
+        variant: "default",
+      });
+
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast({
+        title: "Registration Failed",
+        description: error.message || "An error occurred during registration. Please try again.",
         variant: "destructive",
       });
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
-
-    if (!formData.lastName.trim()) {
-      toast({
-        title: "Validation Error",
-        description: t('validation.lastName'),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!formData.email.trim() || !formData.email.includes("@")) {
-      toast({
-        title: "Validation Error",
-        description: t('validation.email'),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!formData.phone.trim()) {
-      toast({
-        title: "Validation Error",
-        description: t('validation.phone'),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!formData.age || parseInt(formData.age) < 1 || parseInt(formData.age) > 100) {
-      toast({
-        title: "Validation Error",
-        description: t('validation.age'),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!formData.gender) {
-      toast({
-        title: "Validation Error",
-        description: t('validation.gender'),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!formData.class.trim()) {
-      toast({
-        title: "Validation Error",
-        description: t('validation.class'),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!formData.class.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Please enter your class",
-        variant: "destructive",
-      });
-      return;
-    }
-
-
-    if (!formData.agreeToTerms) {
-      toast({
-        title: "Validation Error",
-        description: t('validation.terms'),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Check if email already exists
-    const existingRecords = JSON.parse(localStorage.getItem("registrationRecords") || "[]");
-    const emailExists = existingRecords.some((record: any) => 
-      record.email.toLowerCase() === formData.email.toLowerCase()
-    );
-
-    if (emailExists) {
-      toast({
-        title: "Email Already Registered",
-        description: t('validation.emailExists'),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Complete registration and store data
-    const registrationRecord = {
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      age: formData.age,
-      nationality: formData.nationality,
-      gender: formData.gender,
-      class: formData.class,
-      registrationDate: new Date().toISOString(),
-      checked: false,
-    };
-
-    // Store in localStorage
-    const updatedRecords = [...existingRecords, registrationRecord];
-    localStorage.setItem("registrationRecords", JSON.stringify(updatedRecords));
-
-    // Show success popup
-    setShowSuccessPopup(true);
-
-    // Clear form
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      age: "",
-      nationality: "",
-      gender: "",
-      class: "",
-      agreeToTerms: false,
-    });
   };
 
   const handleSuccessClose = () => {
@@ -447,10 +484,18 @@ const RegistrationModal = ({ isOpen, onClose }: RegistrationModalProps) => {
 
           <Button
             type="submit"
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 text-base sm:text-lg shadow-soft hover:shadow-elevated transition-all duration-300"
+            disabled={isSubmitting}
+            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-semibold py-3 text-base sm:text-lg shadow-soft hover:shadow-elevated transition-all duration-300"
             size="lg"
           >
-            {t('registration.submit')}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Registering...
+              </>
+            ) : (
+              t('registration.submit')
+            )}
           </Button>
         </form>
       </DialogContent>
