@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 import {
   Download,
   Users,
@@ -15,22 +15,24 @@ import {
   MapPin,
   User,
   Shield,
-  Trash2
+  RefreshCw,
+  Loader2
 } from "lucide-react";
 import { Document, Packer, Paragraph, Table, TableCell, TableRow, WidthType, AlignmentType, TextRun, ImageRun, HeadingLevel } from "docx";
 
 interface RegistrationRecord {
   id: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone: string;
-  age: string;
+  age: number;
   nationality: string;
   gender: string;
   class: string;
-  registrationDate: string;
-  checked: boolean;
+  registration_date: string;
+  created_at: string;
+  checked?: boolean;
 }
 
 const Records = () => {
@@ -40,6 +42,7 @@ const Records = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [filteredRecords, setFilteredRecords] = useState<RegistrationRecord[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // Admin password (in production, this should be more secure)
   const ADMIN_PASSWORD = "iai2024admin";
@@ -52,9 +55,9 @@ const Records = () => {
 
   useEffect(() => {
     // Filter records based on search term
-    const filtered = records.filter(record => 
-      record.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      record.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const filtered = records.filter(record =>
+      record.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.phone.includes(searchTerm)
     );
@@ -78,29 +81,31 @@ const Records = () => {
     }
   };
 
-  const loadRecords = () => {
-    const storedRecords = localStorage.getItem("registrationRecords");
-    if (storedRecords) {
-      setRecords(JSON.parse(storedRecords));
+  const loadRecords = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('registrations')
+        .select('*')
+        .order('registration_date', { ascending: false });
+
+      if (error) throw error;
+
+      setRecords(data || []);
+    } catch (error) {
+      console.error('Error fetching records:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load registration records",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const updateRecord = (id: string, checked: boolean) => {
-    const updatedRecords = records.map(record => 
-      record.id === id ? { ...record, checked } : record
-    );
-    setRecords(updatedRecords);
-    localStorage.setItem("registrationRecords", JSON.stringify(updatedRecords));
-  };
-
-  const deleteRecord = (id: string) => {
-    const updatedRecords = records.filter(record => record.id !== id);
-    setRecords(updatedRecords);
-    localStorage.setItem("registrationRecords", JSON.stringify(updatedRecords));
-    toast({
-      title: t('records.delete'),
-      description: t('records.deleteMessage'),
-    });
+  const refreshRecords = () => {
+    loadRecords();
   };
 
   const downloadWordDocument = async () => {
@@ -154,7 +159,7 @@ const Records = () => {
             }),
             new TableCell({
               children: [new Paragraph({
-                children: [new TextRun({ text: "Status ☐", bold: true, size: 26 })],
+                children: [new TextRun({ text: "Registration Date", bold: true, size: 26 })],
                 alignment: AlignmentType.CENTER
               })],
               width: { size: 10, type: WidthType.PERCENTAGE }
@@ -168,7 +173,7 @@ const Records = () => {
               // Full Name cell
               new TableCell({
                 children: [new Paragraph({
-                  children: [new TextRun({ text: `${record.firstName} ${record.lastName}`, size: 26 })],
+                  children: [new TextRun({ text: `${record.first_name} ${record.last_name}`, size: 26 })],
                   alignment: AlignmentType.LEFT
                 })],
                 width: { size: 20, type: WidthType.PERCENTAGE }
@@ -192,7 +197,7 @@ const Records = () => {
               // Age cell
               new TableCell({
                 children: [new Paragraph({
-                  children: [new TextRun({ text: record.age, size: 26 })],
+                  children: [new TextRun({ text: record.age.toString(), size: 26 })],
                   alignment: AlignmentType.CENTER
                 })],
                 width: { size: 10, type: WidthType.PERCENTAGE }
@@ -213,10 +218,10 @@ const Records = () => {
                 })],
                 width: { size: 10, type: WidthType.PERCENTAGE }
               }),
-              // Status checkbox cell
+              // Registration Date cell
               new TableCell({
                 children: [new Paragraph({
-                  children: [new TextRun({ text: record.checked ? "☑" : "☐", size: 26 })],
+                  children: [new TextRun({ text: new Date(record.registration_date).toLocaleDateString(), size: 26 })],
                   alignment: AlignmentType.CENTER
                 })],
                 width: { size: 10, type: WidthType.PERCENTAGE }
@@ -385,21 +390,42 @@ const Records = () => {
                 />
               </div>
 
-              <Button
-                onClick={downloadWordDocument}
-                className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-semibold shadow-soft hover:shadow-elevated transition-all duration-300 text-sm sm:text-base"
-                disabled={filteredRecords.length === 0}
-              >
-                <Download className="w-4 sm:w-5 h-4 sm:h-5 mr-2" />
-                {t('records.download')}
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  onClick={refreshRecords}
+                  variant="outline"
+                  className="w-full sm:w-auto border-red-600 text-red-600 hover:bg-red-50"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Loader2 className="w-4 sm:w-5 h-4 sm:h-5 mr-2 animate-spin" />
+                  ) : (
+                    <RefreshCw className="w-4 sm:w-5 h-4 sm:h-5 mr-2" />
+                  )}
+                  Refresh
+                </Button>
+
+                <Button
+                  onClick={downloadWordDocument}
+                  className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-semibold shadow-soft hover:shadow-elevated transition-all duration-300 text-sm sm:text-base"
+                  disabled={filteredRecords.length === 0}
+                >
+                  <Download className="w-4 sm:w-5 h-4 sm:h-5 mr-2" />
+                  {t('records.download')}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Records Table */}
         <div className="bg-white rounded-2xl shadow-soft overflow-hidden">
-          {filteredRecords.length === 0 ? (
+          {loading ? (
+            <div className="p-8 sm:p-12 text-center">
+              <Loader2 className="w-8 sm:w-12 h-8 sm:h-12 animate-spin mx-auto mb-4 text-red-600" />
+              <p className="text-slate-600">Loading records...</p>
+            </div>
+          ) : filteredRecords.length === 0 ? (
             <div className="p-8 sm:p-12 text-center">
               <Users className="w-12 sm:w-16 h-12 sm:h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="font-display text-lg sm:text-xl font-semibold text-slate-600 mb-2">
@@ -418,8 +444,6 @@ const Records = () => {
                     <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">{t('records.contact')}</th>
                     <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">{t('records.details')}</th>
                     <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-semibold text-slate-700">{t('records.registration')}</th>
-                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-700">{t('records.status')}</th>
-                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-700">{t('records.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
@@ -432,7 +456,7 @@ const Records = () => {
                           </div>
                           <div className="min-w-0">
                             <p className="font-semibold text-slate-800 text-sm sm:text-base truncate">
-                              {record.firstName} {record.lastName}
+                              {record.first_name} {record.last_name}
                             </p>
                             <p className="text-xs sm:text-sm text-slate-600 capitalize">{record.gender}</p>
                           </div>
@@ -468,28 +492,11 @@ const Records = () => {
                       </td>
                       <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <p className="text-xs sm:text-sm text-slate-600">
-                          {new Date(record.registrationDate).toLocaleDateString()}
+                          {new Date(record.registration_date).toLocaleDateString()}
                         </p>
                         <p className="text-xs text-slate-500">
-                          {new Date(record.registrationDate).toLocaleTimeString()}
+                          {new Date(record.registration_date).toLocaleTimeString()}
                         </p>
-                      </td>
-                      <td className="px-3 sm:px-6 py-3 sm:py-4 text-center">
-                        <Checkbox
-                          checked={record.checked}
-                          onCheckedChange={(checked) => updateRecord(record.id, checked as boolean)}
-                          className="border-red-600 data-[state=checked]:bg-red-600"
-                        />
-                      </td>
-                      <td className="px-3 sm:px-6 py-3 sm:py-4 text-center">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteRecord(record.id)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 p-1 sm:p-2"
-                        >
-                          <Trash2 className="w-3 sm:w-4 h-3 sm:h-4" />
-                        </Button>
                       </td>
                     </tr>
                   ))}
