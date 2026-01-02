@@ -56,7 +56,7 @@ const resources = {
 
       // Terms
       "terms.agree": "I agree to the Terms and Conditions",
-      "terms.description": "By checking this box, you agree to discipline, assiduity, work and self-control, payment of casting fees 2000frs.",
+      "terms.description": "By checking this box, you agree to:<br/>- <strong>Discipline</strong><br/>- <strong>Assiduity</strong><br/>- <strong>Work and self-control</strong><br/>- <strong>Payment of casting fees 2000frs</strong>",
 
       // Records Page
       "records.title": "Registration Records",
@@ -182,7 +182,7 @@ const resources = {
 
       // Terms
       "terms.agree": "J'accepte les Termes et Conditions",
-      "terms.description": "En cochant cette case, vous acceptez la discipline, l'assiduité, le travail et la maîtrise de soi, le paiement des frais de casting 2000frs.",
+      "terms.description": "En cochant cette case, vous acceptez :<br/>- <strong>La discipline</strong><br/>- <strong>L'assiduité</strong><br/>- <strong>Le travail et la maîtrise de soi</strong><br/>- <strong>Le paiement des frais de casting 2000frs</strong>",
 
       // Records Page
       "records.title": "Archives d'Inscription",

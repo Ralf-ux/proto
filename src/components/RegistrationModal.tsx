@@ -480,9 +480,10 @@ const RegistrationModal = ({ isOpen, onClose }: RegistrationModalProps) => {
               <Label htmlFor="agreeToTerms" className="text-slate-700 cursor-pointer font-medium text-sm sm:text-base">
                 {t('terms.agree')} *
               </Label>
-              <p className="text-xs sm:text-sm text-slate-600">
-                {t('terms.description')}
-              </p>
+              <p 
+                className="text-xs sm:text-sm text-slate-600"
+                dangerouslySetInnerHTML={{ __html: t('terms.description') }}
+              />
             </div>
           </div>
 
