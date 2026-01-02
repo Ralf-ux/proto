@@ -36,12 +36,12 @@ const resources = {
       "registration.class": "Class",
       "registration.submit": "Submit Registration",
       "registration.success.title": "Registration Successful!",
-      "registration.success.message": "Welcome to IAI PROTOCOLE!",
-      "registration.success.description": "Your registration has been submitted successfully. Our team will review your application and contact you soon.",
-      "registration.success.step1": "✓ Your information has been securely saved",
-      "registration.success.step2": "✓ You will receive a confirmation email shortly",
-      "registration.success.step3": "✓ Our team will contact you within 24-48 hours",
-      "registration.success.continue": "Continue",
+      "registration.success.message": "You have just finished the first step, your application has been well registered, we will examine it and you will have more information later.",
+      "registration.success.description": "",
+      "registration.success.step1": "",
+      "registration.success.step2": "",
+      "registration.success.step3": "",
+      "registration.success.continue": "Return to Home",
 
       // Validation
       "validation.firstName": "Please enter your first name",
@@ -56,7 +56,7 @@ const resources = {
 
       // Terms
       "terms.agree": "I agree to the Terms and Conditions",
-      "terms.description": "By checking this box, you agree to our terms of service and privacy policy.",
+      "terms.description": "By checking this box, you agree to discipline, assiduity, work and self-control, payment of casting fees 2000frs.",
 
       // Records Page
       "records.title": "Registration Records",
@@ -162,12 +162,12 @@ const resources = {
       "registration.class": "Classe",
       "registration.submit": "Soumettre l'Inscription",
       "registration.success.title": "Inscription Réussie !",
-      "registration.success.message": "Bienvenue chez IAI PROTOCOLE !",
-      "registration.success.description": "Votre inscription a été soumise avec succès. Notre équipe examinera votre candidature et vous contactera bientôt.",
-      "registration.success.step1": "✓ Vos informations ont été sauvegardées en sécurité",
-      "registration.success.step2": "✓ Vous recevrez un email de confirmation sous peu",
-      "registration.success.step3": "✓ Notre équipe vous contactera dans les 24-48 heures",
-      "registration.success.continue": "Continuer",
+      "registration.success.message": "Vous venez de finir la première étape, votre candidature a été bien enregistrée, nous allons l'examiner et vous aurez plus d'informations plus tard.",
+      "registration.success.description": "",
+      "registration.success.step1": "",
+      "registration.success.step2": "",
+      "registration.success.step3": "",
+      "registration.success.continue": "Retour à l'accueil",
 
       // Validation
       "validation.firstName": "Veuillez entrer votre prénom",
@@ -182,7 +182,7 @@ const resources = {
 
       // Terms
       "terms.agree": "J'accepte les Termes et Conditions",
-      "terms.description": "En cochant cette case, vous acceptez nos termes de service et politique de confidentialité.",
+      "terms.description": "En cochant cette case, vous acceptez la discipline, l'assiduité, le travail et la maîtrise de soi, le paiement des frais de casting 2000frs.",
 
       // Records Page
       "records.title": "Archives d'Inscription",

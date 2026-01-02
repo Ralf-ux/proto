@@ -253,16 +253,20 @@ const RegistrationModal = ({ isOpen, onClose }: RegistrationModalProps) => {
               <p className="text-green-700 font-medium mb-2">
                 {t('registration.success.message')}
               </p>
-              <p className="text-green-600 text-sm">
-                {t('registration.success.description')}
-              </p>
+              {t('registration.success.description') && (
+                <p className="text-green-600 text-sm">
+                  {t('registration.success.description')}
+                </p>
+              )}
             </div>
 
-            <div className="space-y-2 text-sm text-slate-600 mb-6">
-              <p>{t('registration.success.step1')}</p>
-              <p>{t('registration.success.step2')}</p>
-              <p>{t('registration.success.step3')}</p>
-            </div>
+            {(t('registration.success.step1') || t('registration.success.step2') || t('registration.success.step3')) && (
+              <div className="space-y-2 text-sm text-slate-600 mb-6">
+                {t('registration.success.step1') && <p>{t('registration.success.step1')}</p>}
+                {t('registration.success.step2') && <p>{t('registration.success.step2')}</p>}
+                {t('registration.success.step3') && <p>{t('registration.success.step3')}</p>}
+              </div>
+            )}
 
             <Button
               onClick={handleSuccessClose}
